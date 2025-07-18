@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تطبيق دردشة</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="usernameInput" placeholder="اكتب اسمك" />
+    <button onclick="login()">دخول</button>
+  </div>
+
+  <div class="app hidden" id="chatApp">
+    <div class="header">
+      <span id="userDisplay"></span> - شبيه واتساب
+    </div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-area">
+      <input type="text" id="messageInput" placeholder="اكتب رسالة...">
+      <button onclick="sendMessage()">إرسال</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: sans-serif;
+  background: #e5ddd5;
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+}
+
+.hidden {
+  display: none;
+}
+
+.login-screen {
+  max-width: 400px;
+  margin: 100px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.login-screen input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.login-screen button {
+  background: #128c7e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.app {
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #075e54;
+  color: white;
+  padding: 15px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.chat-box {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.message {
+  background: #dcf8c6;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+}
+
+.input-area button {
+  background: #128c7e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+// التحقق إذا المستخدم دخل سابقًا
+window.onload = () => {
+  const savedUser = localStorage.getItem('username');
+  if (savedUser) {
+    showChat(savedUser);
+  }
+};
+
+function login() {
+  const username = document.getElementById('usernameInput').value.trim();
+  if (username !== '') {
+    localStorage.setItem('username', username);
+    showChat(username);
+  } else {
+    alert('الرجاء كتابة اسم المستخدم');
+  }
+}
+
+function showChat(username) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('chatApp').classList.remove('hidden');
+  document.getElementById('userDisplay').innerText = username;
+}
+
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const chatBox = document.getElementById('chatBox');
+  const message = input.value.trim();
+  const username = localStorage.getItem('username');
+
+  if (message !== '') {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.innerHTML = `<strong>${username}:</strong> ${message}`;
+    chatBox.appendChild(messageElement);
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+}
+
